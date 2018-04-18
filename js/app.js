@@ -84,9 +84,9 @@ $(() => {
   const allDrugs = [$acidcost, $cocainecost, $speedcost, $ketaminecost, $peyotecost, $mdmacost, $heroincost, $weedcost, $methcost, $mushroomscost, $hashcost, $crackcost, $dmtcost];
 
   let cheapDrug = null;
+  let $score = $('.score');
 
-
-
+  let scoreBoard = [];
 
   ////////////////////////
   //**********************
@@ -121,6 +121,11 @@ $(() => {
       $notifications.text('Prices have bottomed out!!');
     } else if (date > 60) {
       prompt('Thanks for playing the game\nYour made a total of £' + $cashAvailable.text());
+      const playerName = prompt('What is your name?');
+      const finalCash = $cashAvailable.text();
+      scoreBoard.push(playerName + ' ' + '£' + finalCash);
+      console.log(scoreBoard);
+      $score.text(scoreBoard);
     }
   }
 
