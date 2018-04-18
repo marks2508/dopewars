@@ -14,6 +14,7 @@ $(() => {
   const $day = $('.day');
   let date = 1;
   let startCash = 3000;
+  let $notifications = $('.notifications');
   // let startDebt = 750;
   let $space = $('.space');
   let startspace = 100;
@@ -82,6 +83,18 @@ $(() => {
 
   const allDrugs = [$acidcost, $cocainecost, $speedcost, $ketaminecost, $peyotecost, $mdmacost, $heroincost, $weedcost, $methcost, $mushroomscost, $hashcost, $crackcost, $dmtcost];
 
+  let cheapDrug = null;
+
+
+
+
+  ////////////////////////
+  //**********************
+  //******FUNCTIONS ******
+  //**********************
+  ////////////////////////
+
+
   function returnRandomPrice(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -101,22 +114,25 @@ $(() => {
     $dmtcost.text(returnRandomPrice(1000, 10000));
   }
 
+  function endOfGameCheck() {
+    if (date === 3) {
+      console.log('day 3');
+      randomDrug(allDrugs);
+      $notifications.text('Prices have bottomed out!!');
+    } else if (date > 60) {
+      prompt('Thanks for playing the game\nYour made a total of £' + $cashAvailable.text());
+    }
+  }
 
-  // function randomPrice() {
-  //   $acidcost.text(Math.floor(Math.random() * 100) + 1);
-  //   $cocainecost.text(Math.floor(Math.random() * 100) + 1);
-  //   $speedcost.text(Math.floor(Math.random() * 100) + 1);
-  //   $ketaminecost.text(Math.floor(Math.random() * 100) + 1);
-  //   $peyotecost.text(Math.floor(Math.random() * 100) + 1);
-  //   $mdmacost.text(Math.floor(Math.random() * 100) + 1);
-  //   $heroincost.text(Math.floor(Math.random() * 100) + 1);
-  //   $weedcost.text(Math.floor(Math.random() * 100) + 1);
-  //   $methcost.text(Math.floor(Math.random() * 100) + 1);
-  //   $mushroomscost.text(Math.floor(Math.random() * 100) + 1);
-  //   $hashcost.text(Math.floor(Math.random() * 100) + 1);
-  //   $crackcost.text(Math.floor(Math.random() * 100) + 1);
-  //   $dmtcost.text(Math.floor(Math.random() * 100) + 1);
-  // }
+  function randomDrug(allDrugs) {
+    const cheapDrug = allDrugs[Math.floor(Math.random()*allDrugs.length)];
+    return cheapDrug.text(returnRandomPrice(10,20));
+  }
+
+  function bottomPriceOut() {
+
+  }
+
 
   $destination.on('click', (e) => {
     console.log('place selected');
@@ -124,6 +140,7 @@ $(() => {
     $place.text(placeSelected);
     $day.text(date++);
     getDrugPrices();
+    endOfGameCheck();
   });
 
   $space.text(startspace);
@@ -423,6 +440,8 @@ $(() => {
       $dmtamount.text($dmtamount.text() - amount);
     }
   });
+
+
 
 
 });
