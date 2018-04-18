@@ -26,19 +26,19 @@ $(() => {
 
 
 
-  const $acidcost = $('.acidcost');
-  let $cocainecost = $('.cocainecost');
-  let $speedcost = $('.speedcost');
-  let $ketaminecost = $('.ketaminecost');
-  let $peyotecost = $('.peyotecost');
-  let $mdmacost = $('.mdmacost');
-  let $heroincost = $('.heroincost');
-  let $weedcost = $('.weedcost');
-  let $methcost = $('.methcost');
-  let $mushroomscost = $('.mushroomscost');
-  let $hashcost = $('.hashcost');
-  let $crackcost = $('.crackcost');
-  let $dmtcost = $('.dmtcost');
+  const $acidcost = $('#acidcost');
+  let $cocainecost = $('#cocainecost');
+  let $speedcost = $('#speedcost');
+  let $ketaminecost = $('#ketaminecost');
+  let $peyotecost = $('#peyotecost');
+  let $mdmacost = $('#mdmacost');
+  let $heroincost = $('#heroincost');
+  let $weedcost = $('#weedcost');
+  let $methcost = $('#methcost');
+  let $mushroomscost = $('#mushroomscost');
+  let $hashcost = $('#hashcost');
+  let $crackcost = $('#crackcost');
+  let $dmtcost = $('#dmtcost');
 
   const $acidamount = $('.acidamount');
   let $cocaineamount = $('.cocaineamount');
@@ -96,31 +96,38 @@ $(() => {
     console.log('drug selected');
     $cashAvailable.text(3000 - $cocainecost.text());
     $cocaineamount.text($cocainecost.text());
+    $space.text(startspace - $acidamount.text());
   });
   $speedcost.on('click', () => {
     console.log('drug selected');
     $cashAvailable.text(3000 - $speedcost.text());
     $speedamount.text($speedcost.text());
+    $space.text(startspace - $acidamount.text());
   });
   $ketaminecost.on('click', () => {
     console.log('drug selected');
     $cashAvailable.text(3000 - $ketaminecost.text());
     $ketamineamount.text($ketaminecost.text());
+    $space.text(startspace - $acidamount.text());
   });
   $peyotecost.on('click', () => {
     console.log('drug selected');
     $cashAvailable.text(3000 - $peyotecost.text());
     $peyoteamount.text($peyotecost.text());
+    $space.text(startspace - $acidamount.text());
   });
   $mdmacost.on('click', () => {
     console.log('drug selected');
     $cashAvailable.text(3000 - $mdmacost.text());
     $mdmaamount.text($mdmacost.text());
+    $space.text(startspace - $acidamount.text());
   });
   $heroincost.on('click', () => {
     console.log('drug selected');
     $cashAvailable.text(3000 - $heroincost.text());
     $heroinamount.text($heroincost.text());
+    $space.text(startspace - $acidamount.text());
+
   });
   $weedcost.on('click', () => {
     console.log('drug selected');
@@ -152,6 +159,7 @@ $(() => {
     $cashAvailable.text(3000 - $dmtcost.text());
     $dmtamount.text($dmtcost.text());
   });
+
 
 
 
