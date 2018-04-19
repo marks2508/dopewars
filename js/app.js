@@ -86,7 +86,7 @@ $(() => {
   let cheapDrug = null;
   let $score = $('.score');
 
-  let scoreBoard = [];
+  const scoreBoard = [];
 
   ////////////////////////
   //**********************
