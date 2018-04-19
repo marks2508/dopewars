@@ -119,14 +119,39 @@ $(() => {
       console.log('day 3');
       randomDrug(allDrugs);
       $notifications.text('Prices have bottomed out!!');
-    } else if (date > 60) {
+    } else if (date > 6) {
       prompt('Thanks for playing the game\nYour made a total of £' + $cashAvailable.text());
       const playerName = prompt('What is your name?');
       const finalCash = $cashAvailable.text();
       scoreBoard.push(playerName + ' ' + '£' + finalCash);
       console.log(scoreBoard);
-      $score.text(scoreBoard);
+      for (let i = 0; i < scoreBoard.length; i++) {
+        $score.text(scoreBoard);
+      }
+      endOfGame();
     }
+      
+  }
+
+  function endOfGame() {
+    date = 1;
+    $day.text(date);
+    $place.text('');
+    $cashAvailable.text(startCash);
+    $space.text(startspace);
+    $acidcost.text(0);
+    $cocainecost.text(0);
+    $speedcost.text(0);
+    $ketaminecost.text(0);
+    $peyotecost.text(0);
+    $mdmacost.text(0);
+    $heroincost.text(0);
+    $weedcost.text(0);
+    $methcost.text(0);
+    $mushroomscost.text(0);
+    $hashcost.text(0);
+    $crackcost.text(0);
+    $dmtcost.text(0);
   }
 
   function randomDrug(allDrugs) {
