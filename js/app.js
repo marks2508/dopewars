@@ -11,8 +11,8 @@ $(() => {
   //************
   const $cashAvailable = $('.cashAvailable');
   const $debt = $('.debt');
-  const $day = $('.day');
-  let date = 1;
+  const $turns = $('.turns');
+  let date = 0;
   let startCash = 3000;
   let $notifications = $('.notifications');
   // let startDebt = 750;
@@ -23,6 +23,9 @@ $(() => {
   // drugs
   // ***********
   // costs
+  // ***********
+
+
   let $cost =  $('.cost');
   const $acidcost = $('#acidcost');
   let $cocainecost = $('#cocainecost');
@@ -95,9 +98,11 @@ $(() => {
   ////////////////////////
 
 
+
   function returnRandomPrice(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+
   function getDrugPrices() {
     $acidcost.text(returnRandomPrice(1000, 5000));
     $cocainecost.text(returnRandomPrice(11000, 95000));
@@ -116,7 +121,7 @@ $(() => {
 
   function endOfGameCheck() {
     if (date === 3) {
-      console.log('day 3');
+      console.log('turns 3');
       randomDrug(allDrugs);
       $notifications.text('Prices have bottomed out!!');
     } else if (date > 6) {
@@ -130,12 +135,12 @@ $(() => {
       }
       endOfGame();
     }
-      
+
   }
 
   function endOfGame() {
-    date = 1;
-    $day.text(date);
+    date = 0;
+    $turns.text(date);
     $place.text('');
     $cashAvailable.text(startCash);
     $space.text(startspace);
@@ -158,17 +163,25 @@ $(() => {
     const cheapDrug = allDrugs[Math.floor(Math.random()*allDrugs.length)];
     return cheapDrug.text(returnRandomPrice(10,20));
   }
+  //
+  // function bottomPriceOut() {
+  //
+  // }
+  // function startChecker() {
+  //   if (!turns) {
+  //
+  //   } else {
+  //   }
+  // }
 
-  function bottomPriceOut() {
-
-  }
 
 
   $destination.on('click', (e) => {
     console.log('place selected');
     placeSelected = $(e.target).html();
     $place.text(placeSelected);
-    $day.text(date++);
+    console.log(date);
+    $turns.text(date++);
     getDrugPrices();
     endOfGameCheck();
   });
@@ -257,219 +270,490 @@ $(() => {
     $space.text(startspace - $dmtamount.text());
   });
 
+
+
   // buy and sell drugs
   $buyAcid.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($acidcost.text())) + ' units' + '\nHow much do you want to buy?');
-    const amountAsNumber = parseInt(amount);
-    const maxAvailable = Math.floor($cashAvailable.text() / ($acidcost.text()));
-    if (amountAsNumber < maxAvailable) {
-      $acidamount.text(amountAsNumber);
+    if (date !== 0) {
+      if ($acidcost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any acid');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($acidcost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($acidcost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $acidamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($acidcost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
     } else {
-      prompt('You can afford ' + Math.floor($cashAvailable.text() / ($acidcost.text())) + ' units' + '\nHow much do you want to buy?' );
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($acidcost.text() * amount));
-    $space.text(startspace - amount);
-
-
   });
   $sellAcid.on('click', () => {
-    const amount = prompt('You have ' + $acidamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $acidcost.text()));
-      $acidamount.text($acidamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $acidamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $acidamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $acidcost.text()));
+        $acidamount.text($acidamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
+
 
   $buyCocaine.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($cocainecost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $cocaineamount.text(amount);
+    if (date !== 0) {
+      if ($cocainecost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any cocaine');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($cocainecost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($cocainecost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $cocaineamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($cocainecost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($cocainecost.text() * amount));
-    $space.text(startspace - amount);
   });
   $sellCocaine.on('click', () => {
-    const amount = prompt('You have ' + $cocaineamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $cocainecost.text()));
-      $cocaineamount.text($cocaineamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $cocaineamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $cocaineamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $cocainecost.text()));
+        $cocaineamount.text($cocaineamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
+
 
   $buySpeed.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($speedcost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $speedamount.text(amount);
+    if (date !== 0) {
+      if ($speedcost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any acid');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($speedcost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($speedcost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $speedamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($speedcost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($speedcost.text() * amount));
-    $space.text(startspace - amount);
   });
   $sellSpeed.on('click', () => {
-    const amount = prompt('You have ' + $speedamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $speedcost.text()));
-      $speedamount.text($speedamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $speedamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $speedamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $speedcost.text()));
+        $speedamount.text($speedamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
+
 
   $buyKetamine.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($ketaminecost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $ketamineamount.text(amount);
+    if (date !== 0) {
+      if ($ketaminecost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any ketamine');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($ketaminecost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($ketaminecost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $ketamineamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($ketaminecost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($ketaminecost.text() * amount));
-    $space.text(startspace - amount);
   });
   $sellKetamine.on('click', () => {
-    const amount = prompt('You have ' + $ketamineamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $ketaminecost.text()));
-      $ketamineamount.text($ketamineamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $ketamineamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $ketamineamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $ketaminecost.text()));
+        $ketamineamount.text($ketamineamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
+
 
   $buyPeyote.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($peyotecost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $peyoteamount.text(amount);
+    if (date !== 0) {
+      if ($peyotecost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any peyote');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($peyotecost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($peyotecost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $peyoteamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($peyotecost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($peyotecost.text() * amount));
-    $space.text(startspace - amount);
   });
   $sellPeyote.on('click', () => {
-    const amount = prompt('You have ' + $peyoteamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $peyotecost.text()));
-      $peyoteamount.text($peyoteamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $peyoteamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $peyoteamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $peyotecost.text()));
+        $peyoteamount.text($peyoteamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
+
 
   $buyMdma.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($mdmacost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $mdmaamount.text(amount);
+    if (date !== 0) {
+      if ($mdmacost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any mdma');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($mdmacost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($mdmacost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $mdmaamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($mdmacost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($mdmacost.text() * amount));
-    $space.text(startspace - amount);
   });
   $sellMdma.on('click', () => {
-    const amount = prompt('You have ' + $mdmaamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $mdmacost.text()));
-      $mdmaamount.text($mdmaamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $mdmaamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $mdmaamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $mdmacost.text()));
+        $mdmaamount.text($mdmaamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
+
 
   $buyHeroin.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($heroincost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $heroinamount.text(amount);
+    if (date !== 0) {
+      if ($heroincost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any heroin');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($heroincost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($heroincost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $heroinamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($heroincost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($heroincost.text() * amount));
-    $space.text(startspace - amount);
   });
   $sellHeroin.on('click', () => {
-    const amount = prompt('You have ' + $heroinamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $heroincost.text()));
-      $heroinamount.text($heroinamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $heroinamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $heroinamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $heroincost.text()));
+        $heroinamount.text($heroinamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
+
 
   $buyWeed.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($weedcost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $weedamount.text(amount);
+    if (date !== 0) {
+      if ($weedcost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any weed');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($weedcost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($weedcost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $weedamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($weedcost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($weedcost.text() * amount));
-    $space.text(startspace - amount);
   });
   $sellWeed.on('click', () => {
-    const amount = prompt('You have ' + $weedamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $weedcost.text()));
-      $weedamount.text($weedamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $weedamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $weedamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $weedcost.text()));
+        $weedamount.text($weedamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
+
 
   $buyMeth.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($methcost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $methamount.text(amount);
+    if (date !== 0) {
+      if ($methcost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any meth');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($methcost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($methcost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $methamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($methcost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($methcost.text() * amount));
-    $space.text(startspace - amount);
   });
   $sellMeth.on('click', () => {
-    const amount = prompt('You have ' + $methamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $methcost.text()));
-      $methamount.text($methamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $methamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $methamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $methcost.text()));
+        $methamount.text($methamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
+
 
   $buyMushrooms.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($mushroomscost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $mushroomsamount.text(amount);
+    if (date !== 0) {
+      if ($mushroomscost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any mushrooms');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($mushroomscost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($mushroomscost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $mushroomsamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($mushroomscost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($mushroomscost.text() * amount));
-    $space.text(startspace - amount);
   });
   $sellMushrooms.on('click', () => {
-    const amount = prompt('You have ' + $mushroomsamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $mushroomscost.text()));
-      $mushroomsamount.text($mushroomsamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $mushroomsamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $mushroomsamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $mushroomscost.text()));
+        $mushroomsamount.text($mushroomsamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
+
 
   $buyHash.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($hashcost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $hashamount.text(amount);
+    if (date !== 0) {
+      if ($hashcost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any hash');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($hashcost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($hashcost.text()));
+        if (amountAsNumber > maxAvailable) {
+          console.log(maxAvailable);
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $hashamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($hashcost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($hashcost.text() * amount));
-    $space.text(startspace - amount);
   });
   $sellHash.on('click', () => {
-    const amount = prompt('You have ' + $hashamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $hashcost.text()));
-      $hashamount.text($hashamount.text() - amount);
-    }
-  });
-  $buyCrack.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($crackcost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $crackamount.text(amount);
-    }
-    $cashAvailable.text($cashAvailable.text() - ($crackcost.text() * amount));
-    $space.text(startspace - amount);
-  });
-  $sellCrack.on('click', () => {
-    const amount = prompt('You have ' + $crackamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $crackcost.text()));
-      $crackamount.text($crackamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $hashamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $hashamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $hashcost.text()));
+        $hashamount.text($hashamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
 
-  $buyDmt.on('click', () => {
-    const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($dmtcost.text())) + ' units' + '\nHow much do you want to buy?');
-    if (amount > 0) {
-      $dmtamount.text(amount);
+
+  $buyCrack.on('click', () => {
+    if (date !== 0) {
+      if ($crackcost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any crack');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($crackcost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($crackcost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $crackamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($crackcost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
-    $cashAvailable.text($cashAvailable.text() - ($dmtcost.text() * amount));
-    $space.text(startspace - amount);
+  });
+  $sellCrack.on('click', () => {
+    if (date !== 0) {
+      alert('You have ' + $crackamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $crackamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $crackcost.text()));
+        $crackamount.text($crackamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
+    }
+  });
+
+
+  $buyDmt.on('click', () => {
+    if (date !== 0) {
+      if ($dmtcost.text() > $cashAvailable.text()) {
+        alert('You can not afford to buy any dmt');
+      } else {
+        const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($dmtcost.text())) + ' units' + '\nHow much do you want to buy?');
+        const amountAsNumber = parseInt(amount);
+        const maxAvailable = Math.floor($cashAvailable.text() / ($dmtcost.text()));
+        if (amountAsNumber > maxAvailable) {
+          alert('You can not afford that many');
+        } else {
+          console.log(amountAsNumber);
+          $dmtamount.text(amountAsNumber);
+          $cashAvailable.text($cashAvailable.text() - ($dmtcost.text() * amount));
+          $space.text(startspace - amount);
+        }
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
+    }
   });
   $sellDmt.on('click', () => {
-    const amount = prompt('You have ' + $dmtamount.text() + ' units to sell.\nHow many do you want to sell?');
-    if (amount > 0) {
-      $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $dmtcost.text()));
-      $dmtamount.text($dmtamount.text() - amount);
+    if (date !== 0) {
+      alert('You have ' + $dmtamount.text() + ' units to sell');
+      const amount = prompt('How many do you want to sell?');
+      if (amount > $dmtamount.text()) {
+        alert('You do not have that many to sell');
+      } else {
+        $cashAvailable.text(parseInt($cashAvailable.text()) + (amount * $dmtcost.text()));
+        $dmtamount.text($dmtamount.text() - amount);
+      }
+    } else {
+      alert('Please click on a destination to begin the game');
     }
   });
+
 
 
 
