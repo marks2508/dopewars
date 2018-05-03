@@ -143,6 +143,7 @@ $(() => {
     $turns.text(date);
     $place.text('');
     $cashAvailable.text(startCash);
+    $notifications.text();
     $space.text(startspace);
     $acidcost.text(0);
     $cocainecost.text(0);
@@ -350,7 +351,7 @@ $(() => {
   $buySpeed.on('click', () => {
     if (date !== 0) {
       if ($speedcost.text() > $cashAvailable.text()) {
-        alert('You can not afford to buy any acid');
+        alert('You can not afford to buy any speed');
       } else {
         const amount = prompt('You can afford ' + Math.floor($cashAvailable.text() / ($speedcost.text())) + ' units' + '\nHow much do you want to buy?');
         const amountAsNumber = parseInt(amount);
