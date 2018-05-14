@@ -125,7 +125,7 @@ $(() => {
       randomDrug(allDrugs);
       $notifications.text('Prices have bottomed out!!');
     } else if (date > 6) {
-      prompt('Thanks for playing the game\nYour made a total of £' + $cashAvailable.text());
+      alert('Thanks for playing the game\nYour made a total of £' + $cashAvailable.text());
       const playerName = prompt('What is your name?');
       const finalCash = $cashAvailable.text();
       scoreBoard.push(playerName + ' ' + '£' + finalCash);
